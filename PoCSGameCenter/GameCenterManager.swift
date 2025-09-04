@@ -39,12 +39,25 @@ final class GameCenterManager: NSObject, ObservableObject, GKGameCenterControlle
 
     func presentFriendsList() {
         guard let root = Self.topViewController() else { return }
-        let gcVC = GKGameCenterViewController()
+        let gcVC = GKGameCenterViewController(state: .leaderboards)
         gcVC.gameCenterDelegate = self
-        gcVC.viewState = .localPlayerFriendsList
+        root.present(gcVC, animated: true)
+    }
+    
+    @available(iOS 14.0, *)
+    func presentLeaderboard(id: String,
+                            playerScope: GKLeaderboard.PlayerScope = .global,
+                            timeScope: GKLeaderboard.TimeScope = .allTime) {
+        guard let root = Self.topViewController() else { return }
+        let gcVC = GKGameCenterViewController(leaderboardID: id,
+                                              playerScope: playerScope,
+                                              timeScope: timeScope)
+        gcVC.gameCenterDelegate = self
         root.present(gcVC, animated: true)
     }
 
+
+    
     func loadFriends() {
         guard GKLocalPlayer.local.isAuthenticated else {
             self.errorMessage = "Autentique-se no Game Center primeiro."
