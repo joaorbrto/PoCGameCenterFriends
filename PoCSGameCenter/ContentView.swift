@@ -6,19 +6,17 @@
 //
 
 import SwiftUI
+import GameKit
+import UIKit
+
 
 struct ContentView: View {
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Text("Hello World")
     }
 }
 
-#Preview {
+#Preview{
     ContentView()
 }
