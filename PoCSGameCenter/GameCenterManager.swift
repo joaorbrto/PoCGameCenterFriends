@@ -7,6 +7,7 @@
 
 import Foundation
 import GameKit
+import UIKit
 
 final class GameCenterManager: NSObject, ObservableObject, GKGameCenterControllerDelegate {
     @Published var isAuthenticated = false
