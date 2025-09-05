@@ -10,9 +10,22 @@
 		E97399492E69B0F90068818E /* PoCSGameCenter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoCSGameCenter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E9B9D4B02E6B048400D80A75 /* Exceptions for "PoCSGameCenter" folder in "PoCSGameCenter" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E97399482E69B0F90068818E /* PoCSGameCenter */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E973994B2E69B0F90068818E /* PoCSGameCenter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E9B9D4B02E6B048400D80A75 /* Exceptions for "PoCSGameCenter" folder in "PoCSGameCenter" target */,
+			);
 			path = PoCSGameCenter;
 			sourceTree = "<group>";
 		};
@@ -257,11 +270,14 @@
 				DEVELOPMENT_TEAM = RDBBF5GZZ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PoCSGameCenter/Info.plist;
+				INFOPLIST_KEY_NSGKFriendListUsageDescription = "Usamos sua lista de amigos do Game Center para mostrar quais amigos também jogam este jogo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -286,11 +302,14 @@
 				DEVELOPMENT_TEAM = RDBBF5GZZ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PoCSGameCenter/Info.plist;
+				INFOPLIST_KEY_NSGKFriendListUsageDescription = "Usamos sua lista de amigos do Game Center para mostrar quais amigos também jogam este jogo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
