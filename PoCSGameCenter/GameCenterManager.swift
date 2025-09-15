@@ -141,3 +141,30 @@ extension GameCenterManager {
         }
     }
 }
+
+extension GameCenterManager {
+    func submitSpotifyPlaysToGC(leaderboardID: String, plays: Int) {
+        guard GKLocalPlayer.local.isAuthenticated else {
+            self.errorMessage = "Autentique-se no Game Center primeiro."
+            return
+        }
+        if #available(iOS 14.0, *) {
+            GKLeaderboard.submitScore(plays,
+                                      context: 0,
+                                      player: GKLocalPlayer.local,
+                                      leaderboardIDs: [leaderboardID]) { error in
+                DispatchQueue.main.async {
+                    if let error { self.errorMessage = error.localizedDescription }
+                }
+            }
+        } else {
+            let score = GKScore(leaderboardIdentifier: leaderboardID)
+            score.value = Int64(plays)
+            GKScore.report([score]) { error in
+                DispatchQueue.main.async {
+                    if let error { self.errorMessage = error.localizedDescription }
+                }
+            }
+        }
+    }
+}

@@ -10,15 +10,18 @@ import GameKit
 
 struct ContentView: View {
     @StateObject private var gc = GameCenterManager()
+    @StateObject private var auth = SpotifyAuthManager()
     @State private var leaderboardID: String = ""
     @State private var isLoadingFriends = false
+    @State private var isCounting = false
+    private let spotifyGCLeaderboardID = "com.pocsgamecenter.spotifyplays.weekly"
 
     var body: some View {
         NavigationView {
             List {
                 Section(header: Text("Sessão")) {
                     HStack {
-                        Label("Status", systemImage: gc.isAuthenticated ? "checkmark.seal.fill" : "xmark.seal")
+                        Label("Status GC", systemImage: gc.isAuthenticated ? "checkmark.seal.fill" : "xmark.seal")
                         Spacer()
                         Text(gc.isAuthenticated ? "Autenticado" : "Não autenticado")
                             .foregroundStyle(gc.isAuthenticated ? .green : .secondary)
@@ -36,42 +39,71 @@ struct ContentView: View {
                     } label: {
                         Label("Entrar no Game Center", systemImage: "person.crop.circle.badge.checkmark")
                     }
-                    .disabled(gc.isAuthenticated) // evita spam quando já autenticado
+                    .disabled(gc.isAuthenticated)
                 }
 
-                Section(header: Text("Leaderboards")) {
-                    Button {
-                        // Abre o painel de leaderboards
-                        gc.presentFriendsList() // no seu manager, este método já apresenta state: .leaderboards
-                    } label: {
-                        Label("Abrir Leaderboards", systemImage: "list.number")
+                // Sessão Spotify (POC)
+                Section(header: Text("Spotify")) {
+                    HStack {
+                        Label(auth.isConnected ? "Conectado" : "Desconectado",
+                              systemImage: auth.isConnected ? "checkmark.seal.fill" : "bolt.slash")
+                        Spacer()
+                        Text(auth.displayName ?? (auth.isConnected ? "Conectado ao Spotify" : ""))
+                            .foregroundStyle(.secondary)
                     }
 
-                    HStack {
-                        TextField("Leaderboard ID (ex.: com.seujogo.pontos)", text: $leaderboardID)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled(true)
-                        if !leaderboardID.isEmpty {
-                            Button {
-                                leaderboardID = ""
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(.secondary)
+                    Button {
+                        // Passe seu ID interno se tiver (aqui é só placeholder)
+                        auth.connect(appUserId: "user_123")
+                    } label: {
+                        Label("Conectar Spotify", systemImage: "link")
+                    }
+                    .disabled(auth.isConnected)
+                }
+
+                // Ranking Spotify via Game Center (POC)
+                Section(header: Text("Ranking Spotify no Game Center (POC)")) {
+                    Button {
+                        guard gc.isAuthenticated else { gc.errorMessage = "Entre no Game Center."; return }
+                        guard auth.isConnected else { gc.errorMessage = "Conecte o Spotify antes."; return }
+
+                        isCounting = true
+                        Task {
+                            do {
+                                let plays = try await SpotifyPlaysService.shared.weeklyPlaysCount()
+                                await MainActor.run {
+                                    gc.submitSpotifyPlaysToGC(leaderboardID: spotifyGCLeaderboardID, plays: plays)
+                                    isCounting = false
+                                }
+                            } catch {
+                                await MainActor.run {
+                                    gc.errorMessage = (error as NSError).localizedDescription
+                                    isCounting = false
+                                }
                             }
-                            .buttonStyle(.plain)
+                        }
+                    } label: {
+                        if isCounting {
+                            HStack { ProgressView(); Text("Calculando e enviando…") }
+                        } else {
+                            Label("Enviar minhas músicas (semana) ao GC", systemImage: "paperplane.fill")
                         }
                     }
+                    .disabled(!gc.isAuthenticated || !auth.isConnected)
 
                     Button {
                         if #available(iOS 14.0, *) {
-                            gc.presentLeaderboard(id: leaderboardID)
+                            gc.presentLeaderboard(id: spotifyGCLeaderboardID,
+                                                  playerScope: .friendsOnly,
+                                                  timeScope: .week)
                         }
                     } label: {
-                        Label("Abrir Leaderboard por ID", systemImage: "arrow.forward.circle")
+                        Label("Ver ranking (amigos/semana)", systemImage: "list.number")
                     }
-                    .disabled(!gc.isAuthenticated || leaderboardID.isEmpty)
+                    .disabled(!gc.isAuthenticated)
                 }
 
+                // Amigos (GC)
                 Section(header: Text("Amigos")) {
                     Button {
                         isLoadingFriends = true
@@ -87,8 +119,7 @@ struct ContentView: View {
                     if isLoadingFriends {
                         HStack {
                             ProgressView()
-                            Text("Carregando…")
-                                .foregroundStyle(.secondary)
+                            Text("Carregando…").foregroundStyle(.secondary)
                         }
                     }
 
@@ -111,6 +142,7 @@ struct ContentView: View {
         }
     }
 }
-#Preview{
+
+#Preview {
     ContentView()
 }
